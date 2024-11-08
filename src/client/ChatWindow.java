@@ -16,8 +16,8 @@ public class ChatWindow extends JFrame {
 
     Socket socket;
     Connection connection;
-    MessageReceiver receiver;
-    MessageSender sender;
+    MessageReceiver receive;
+    MessageSender send;
 
     static final int PORT = 8000;
     String serverIP = "25.16.11.103";
@@ -37,13 +37,13 @@ public class ChatWindow extends JFrame {
         messageField = new JTextField();
         messageField.setEnabled(false);
 
-        setUpChat(userName);
-
         this.add(connectButton, BorderLayout.NORTH);
         this.add(chatScroll, BorderLayout.CENTER);
         this.add(messageField, BorderLayout.SOUTH);
 
-        closeChat();
+        setUpChat(userName);
+
+        setUpCloseEvent();
 
         this.setDefaultCloseOperation(ChatWindow.EXIT_ON_CLOSE);
         this.setSize(300, 400);
@@ -57,10 +57,11 @@ public class ChatWindow extends JFrame {
 
                 connection = new Connection(serverIP, PORT);
                 socket = connection.getSocket();
-                receiver = new MessageReceiver(chatArea, socket);
-                sender = new MessageSender(messageField, chatArea, userName, socket);
 
-                messageField.addActionListener(sender);
+                receive = new MessageReceiver(chatArea, socket);
+                send = new MessageSender(messageField, chatArea, userName, socket);
+
+                messageField.addActionListener(send);
 
                 messageField.setEnabled(true);
                 connectButton.setEnabled(false);
@@ -71,15 +72,15 @@ public class ChatWindow extends JFrame {
         });
     }
 
-    public void closeChat(){
+    public void setUpCloseEvent(){
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (socket != null){
                     try {
                         connection.closeSocket();
-                        receiver.closeStream();
-                        sender.closeStream();
+                        receive.closeStream();
+                        send.closeStream();
                     }
                     catch (Exception ex) {
                         ex.printStackTrace();
