@@ -1,4 +1,4 @@
-package TCPChatProgram.client;
+package client;
 
 import javax.swing.*;
 import java.awt.*;
