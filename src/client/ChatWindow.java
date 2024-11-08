@@ -23,7 +23,7 @@ public class ChatWindow extends JFrame {
     String serverIP = "25.16.11.103";
 
 
-    public ChatWindow() throws UnknownHostException {
+    public ChatWindow(String userName) throws UnknownHostException {
         super("Chat App");
         this.setLayout(new BorderLayout());
 
@@ -37,7 +37,7 @@ public class ChatWindow extends JFrame {
         messageField = new JTextField();
         messageField.setEnabled(false);
 
-        setUpChat();
+        setUpChat(userName);
 
         this.add(connectButton, BorderLayout.NORTH);
         this.add(chatScroll, BorderLayout.CENTER);
@@ -51,14 +51,14 @@ public class ChatWindow extends JFrame {
         this.setLocationRelativeTo(null);
     }
 
-    public void setUpChat(){
+    public void setUpChat(String userName){
         connectButton.addActionListener(e -> {
             try{
 
                 connection = new Connection(serverIP, PORT);
                 socket = connection.getSocket();
                 receiver = new MessageReceiver(chatArea, socket);
-                sender = new MessageSender(messageField, "Josefin", socket);
+                sender = new MessageSender(messageField, chatArea, userName, socket);
 
                 messageField.addActionListener(sender);
 
@@ -90,6 +90,7 @@ public class ChatWindow extends JFrame {
     }
 
     public static void main(String[] args) throws UnknownHostException {
-        ChatWindow chatWindow = new ChatWindow();
+        String userName = JOptionPane.showInputDialog("Enter your name");
+        ChatWindow chatWindow = new ChatWindow(userName);
     }
 }

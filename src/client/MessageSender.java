@@ -12,11 +12,13 @@ public class MessageSender implements ActionListener {
     private PrintWriter out;
     private Socket socket;
     JTextField textField;
+    JTextArea chatArea;
     private String userName;
 
-    public MessageSender(JTextField textField, String userName, Socket socket) throws IOException {
+    public MessageSender(JTextField textField, JTextArea chatArea, String userName, Socket socket) throws IOException {
         this.socket = socket;
         this.textField = textField;
+        this.chatArea = chatArea;
         this.userName = userName;
         openStream();
     }
@@ -38,6 +40,7 @@ public class MessageSender implements ActionListener {
         try {
             String message = textField.getText();
             sendMessage(message);
+            chatArea.append("You: " + message + "\n");
             textField.setText("");
         } catch (IOException ex) {
             throw new RuntimeException(ex);
